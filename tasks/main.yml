@@ -35,19 +35,19 @@
 - name: Distributing custom selinux policies
   copy: src='ssh_password' dest='{{ ssh_custom_selinux_dir }}'
   register: custom_policies_output
-  when: not ssh_use_pam and sestatus.rc == 0 and sestatus.stdout != 'Disabled'
+  when: not ssh_use_pam and sestatus.rc == 0 and sestatus.stdout != 'Disabled' and (ansible_distribution != 'CoreOS')
 
 - name: check and compile policy
   shell: checkmodule -M -m -o {{ ssh_custom_selinux_dir }}/ssh_password.mod {{ ssh_custom_selinux_dir }}/ssh_password
-  when: not ssh_use_pam and sestatus.rc == 0 and sestatus.stdout != 'Disabled'
+  when: not ssh_use_pam and sestatus.rc == 0 and sestatus.stdout != 'Disabled' and (ansible_distribution != 'CoreOS')
 
 - name: create selinux policy module package
   shell: semodule_package -o {{ ssh_custom_selinux_dir }}/ssh_password.pp  -m {{ ssh_custom_selinux_dir }}/ssh_password.mod
-  when: not ssh_use_pam and sestatus.rc == 0 and sestatus.stdout != 'Disabled'
+  when: not ssh_use_pam and sestatus.rc == 0 and sestatus.stdout != 'Disabled' and (ansible_distribution != 'CoreOS')
 
 - name: install selinux policy
   shell: semodule -i {{ ssh_custom_selinux_dir }}/ssh_password.pp
-  when: not ssh_use_pam and sestatus.rc == 0 and sestatus.stdout != 'Disabled'
+  when: not ssh_use_pam and sestatus.rc == 0 and sestatus.stdout != 'Disabled' and (ansible_distribution != 'CoreOS')
 
 - name: remove selinux-policy when Pam is used, because Allowing sshd to read the shadow file directly is considered a potential security risk (http://danwalsh.livejournal.com/12333.html)
   shell: semodule -r ssh_password
