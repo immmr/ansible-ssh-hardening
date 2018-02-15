@@ -1,3 +1,5 @@
 - name: restart sshd
-  service: name={{ sshd_service_name }} state=restarted
+  shell: sleep 3; /etc/init.d/{{ sshd_service_name }} restart
+  async: 1
+  poll: 0
   when: "(ssh_server_enabled|bool)"
