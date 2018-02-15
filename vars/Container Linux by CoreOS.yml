@@ -1,2 +1,4 @@
 sshd_service_name: sshd
+ssh_owner: core
+ssh_group: root
 sftp_enabled: true
